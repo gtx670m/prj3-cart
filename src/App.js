@@ -16,7 +16,7 @@ class App extends Component {
           <div className="container">
             <ProductContainer />
             <Message />
-            <CartContainer />
+            <CartContainer/>
           </div>
         </main>
         <Footer />
