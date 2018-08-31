@@ -1,38 +1,36 @@
 import * as types from '../constants/ActionTypes';
-// var data = JSON.parse(localStorage.getItem('cart'));
-// var initialState = data ? data : [];
-var initialState = [
-  {
-    product: {
-      id: 1,
-      name: 'Iphone 7 Plus',
-      image: 'https://cdn.tgdd.vn/Products/Images/42/87840/iphone-7-plus-256gb-hh-600x600.jpg',
-      description: 'Hàng công ty',
-      price: 700,
-      inventory: 10,
-      rating: 4
-    },
-    quantity: 5
-  },
-  {
-    product: {
-      id: 3,
-      name: 'Nokia 7 Plus',
-      image: 'https://cdn.tgdd.vn/Products/Images/42/153854/nokia-7-plus-5-400x460.png',
-      description: 'CPO',
-      price: 600,
-      inventory: 5,
-      rating: 4
-    },
-    quantity: 3
-  }
-];
+var data = JSON.parse(localStorage.getItem('CART'));
+var initialState = data ? data : [];
+
 export default (state = initialState, action) => {
   switch (action.type) {
     case types.ADD_TO_CART:
-      console.log(action);
+      const newProduct = {
+        product: action.product,
+        quantity: action.quantity
+      }
+      const check_duplicate = state.find(state => state.product.id === newProduct.product.id);
+      if (check_duplicate) {
+        check_duplicate.quantity++;
+      } else {
+        state.push(newProduct);
+      }
+      localStorage.setItem('CART', JSON.stringify(state));
       return [...state];
-    default: return [...state];
+
+    case types.CHANGE_QUANTITY:
+      const change_quantity = state.find(state => state.product.id === action.product.id);
+      change_quantity.quantity += action.quantity;
+      localStorage.setItem('CART', JSON.stringify(state));
+      return [...state]
+
+    case types.REMOVE_PRODUCT_IN_CART:
+      const index = state.findIndex(state => state.product.id === action.product.id);
+      state.splice(index, 1);
+      localStorage.setItem('CART', JSON.stringify(state));
+      return [...state]
+    default: return state;
   }
 }
+
 
